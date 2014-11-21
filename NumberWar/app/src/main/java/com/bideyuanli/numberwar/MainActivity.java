@@ -42,6 +42,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
         return super.onOptionsItemSelected(item);
     }
+
     public void onFragmentInteraction(Uri uri) {
 
     }

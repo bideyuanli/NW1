@@ -7,15 +7,4 @@
     tools:context=".MainActivity$PlaceholderFragment"
     android:id="@+id/root">
 
-    <view
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        class="com.bideyuanli.numberwar.NumberView"
-        android:id="@+id/current"
-        android:elevation="10dp"
-        android:nestedScrollingEnabled="false"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="left" />
-
 </RelativeLayout>

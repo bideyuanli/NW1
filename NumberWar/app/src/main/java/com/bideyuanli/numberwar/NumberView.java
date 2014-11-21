@@ -1,22 +1,21 @@
 package com.bideyuanli.numberwar;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 
 /**
  * TODO: document your custom view class.
  */
-public class NumberView extends TextSwitcher {
+public class NumberView extends TextView {
     private String mExampleString = "11";
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 100; // TODO: use a default from R.dimen...
@@ -39,43 +38,51 @@ public class NumberView extends TextSwitcher {
 
     private void init(AttributeSet attrs, int defStyle) {
         setElevation(10);
-        // Load attributes
-        setFactory(new ViewFactory() {
-
-            public View makeView() {
-                // TODO Auto-generated method stub
-                // create new textView and set the properties like clolr, size etc
-                TextView myText = new TextView(getContext());
-                myText.setGravity(Gravity.CENTER);
-                myText.setTextSize(36);
-                myText.setTextColor(Color.BLACK);
-                return myText;
-            }
-        });
-
-        // Declare the in and out animations and initialize them
-        Animation in = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
-        Animation out = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
-
-        // set the animation type of textSwitcher
-        setInAnimation(in);
-        setOutAnimation(out);
+        setGravity(Gravity.CENTER);
+        setTextSize(36);
+        setTextColor(Color.BLACK);
     }
 
     public void setNumber(int n, boolean animated) {
+        int color = NumberModel.get().getColor(n) | 0xFF000000;
         String text = "";
-        if (n > 0) text = "" + n;
-
-        if (animated) {
-            setText(text);
-        } else {
-            setCurrentText(text);
+        switch (n) {
+            case 0:
+                break;
+            case NumberModel.VALUE_ALL:
+                text = "?";
+                break;
+            default:
+                text = "" + n;
         }
-        int c = 255 - n * 20;
-        int color = Color.rgb(c, c, c);
+
+
+        setText(text);
         setBackgroundColor(color);
+
     }
+
     public void setNumber(int n) {
         setNumber(n, false);
     }
+
+    public void appearAnimation(int delay) {
+        setScaleX(0f);
+        setScaleY(0f);
+        AnimatorSet set = createScaleAnimation(200, 1f);
+        set.setStartDelay(delay);
+        set.start();
+    }
+
+    public AnimatorSet createScaleAnimation(int duration, float scale) {
+        AnimatorSet set = new AnimatorSet();
+        Animator a1 = ObjectAnimator.ofFloat(this, "scaleX", scale);
+        a1.setDuration(duration);
+
+        Animator a2 = ObjectAnimator.ofFloat(this, "scaleY", scale);
+        a2.setDuration(duration);
+        set.playTogether(a1, a2);
+        return set;
+    }
+
 }

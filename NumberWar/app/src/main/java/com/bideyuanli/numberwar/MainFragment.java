@@ -2,24 +2,18 @@ package com.bideyuanli.numberwar;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MainFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +31,8 @@ public class MainFragment extends Fragment {
     private RelativeLayout root;
     private NumberView current;
     private NumberModel model = NumberModel.get();
+    private NumberView score_view;
+    private Button button;
     private boolean initialized = false;
 
     public MainFragment() {
@@ -62,11 +58,15 @@ public class MainFragment extends Fragment {
     }
 
     public void reset() {
+        int delay = 500;
+        if (current != null) {
+            root.removeAllViews();
+            delay = 0;
+        }
         model.reset();
 
         int width = root.getWidth() - root.getPaddingLeft() - root.getPaddingRight();
         int height = root.getHeight();
-        Log.d("=====", "" + width);
         int padding = 20;
         int start_y = 300;
         int start_x = padding;
@@ -75,12 +75,52 @@ public class MainFragment extends Fragment {
         int step = width / model.getWidth();
         int tile_size = step - padding;
 
+        int x_line = start_x;
+        int y_line = start_y - step - 50;
+        {
+            button = new Button(getActivity());
+            root.addView(button);
+            button.setX(x_line);
+            button.setY(y_line);
+            button.setText("+");
+            button.setTextColor(Color.WHITE);
+            button.setElevation(10);
 
-        current.setX(start_x + step * (model.getWidth() - 1));
-        current.setY(start_y - step - 30);
-        current.setMinimumWidth(tile_size);
-        current.setMinimumHeight(tile_size);
-        current.setNumber(model.getCurrent());
+            button.setMinimumWidth(tile_size);
+            button.setWidth(tile_size);
+            button.setHeight(tile_size);
+            button.setBackgroundResource(R.drawable.round_button);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    reset();
+                }
+            });
+        }
+        {
+            score_view = new NumberView(getActivity());
+            root.addView(score_view);
+            x_line = width / 4;
+            score_view.setX(x_line);
+            score_view.setY(y_line);
+            score_view.setMinimumWidth(width / 2);
+            score_view.setMinimumHeight(tile_size);
+            score_view.setBackgroundResource(R.drawable.numberrect);
+            score_view.setTextSize(28);
+            score_view.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+            score_view.setPadding(0, 0, 40, 0);
+            updateScoreView();
+        }
+        {
+            current = new NumberView(getActivity());
+            root.addView(current);
+            x_line = start_x + step * (model.getWidth() -1);
+            current.setX(x_line);
+            current.setY(y_line);
+            current.setMinimumWidth(tile_size);
+            current.setMinimumHeight(tile_size);
+            current.setNumber(model.getCurrent());
+            current.appearAnimation(delay + 200);
+        }
 
         views = new NumberView[model.getSize()];
         for (int i = 0; i < views.length; i++) {
@@ -95,6 +135,7 @@ public class MainFragment extends Fragment {
             view.setX(x);
             view.setY(y);
             view.setNumber(model.getGrid(i));
+            view.appearAnimation(delay + (i % model.getWidth() + i / model.getWidth()) * 100);
 
             view.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -102,6 +143,10 @@ public class MainFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public void updateScoreView() {
+        score_view.setText("" + model.getScore());
     }
 
 
@@ -135,7 +180,6 @@ public class MainFragment extends Fragment {
 
 
         root = (RelativeLayout) rootView.findViewById(R.id.root);
-        current = (NumberView) rootView.findViewById(R.id.current);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -145,7 +189,7 @@ public class MainFragment extends Fragment {
                 }
             }
         });
-        //reset();
+
         return rootView;
     }
 
