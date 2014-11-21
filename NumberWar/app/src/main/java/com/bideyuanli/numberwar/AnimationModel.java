@@ -8,6 +8,7 @@ import android.animation.ObjectAnimator;
  * Created by Siyi on 2014/11/20.
  */
 public class AnimationModel implements Animator.AnimatorListener {
+    MainFragment main;
     NumberView from_view;
     NumberView to_view;
     private int from;
@@ -16,6 +17,7 @@ public class AnimationModel implements Animator.AnimatorListener {
     private float from_y;
 
     public Animator createAnimation(MainFragment main) {
+        this.main = main;
         from_view = main.getView(from);
         to_view = main.getView(to);
         from_x = from_view.getX();
@@ -40,8 +42,11 @@ public class AnimationModel implements Animator.AnimatorListener {
 
     @Override
     public void onAnimationEnd(Animator animator) {
+        NumberModel model = NumberModel.get();
         from_view.setX(from_x);
         from_view.setY(from_y);
+        to_view.setNumber(model.getGrid(to));
+        from_view.setNumber(model.getGrid(from));
     }
 
     @Override

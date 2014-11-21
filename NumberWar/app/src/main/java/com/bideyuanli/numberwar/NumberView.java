@@ -46,7 +46,7 @@ public class NumberView extends TextSwitcher {
                 // TODO Auto-generated method stub
                 // create new textView and set the properties like clolr, size etc
                 TextView myText = new TextView(getContext());
-                myText.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                myText.setGravity(Gravity.CENTER);
                 myText.setTextSize(30);
                 myText.setTextColor(Color.BLUE);
                 return myText;
@@ -62,12 +62,20 @@ public class NumberView extends TextSwitcher {
         setOutAnimation(out);
     }
 
-    public void SetNumber(int n) {
-        if (n == 0) setText("");
-        else setText("" + n);
+    public void setNumber(int n, boolean animated) {
+        String text = "";
+        if (n > 0) text = "" + n;
+
+        if (animated) {
+            setText(text);
+        } else {
+            setCurrentText(text);
+        }
         int c = 255 - n * 6;
         int color = Color.rgb(c, c, c);
         setBackgroundColor(color);
     }
-
+    public void setNumber(int n) {
+        setNumber(n, false);
+    }
 }

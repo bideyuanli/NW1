@@ -1,15 +1,15 @@
 package com.bideyuanli.numberwar;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 
 
 /**
@@ -33,9 +33,11 @@ public class MainFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
 
-    private GridAdapter adapter;
+    private NumberView[] views;
+    private RelativeLayout root;
     private NumberView current;
     private NumberModel model = NumberModel.get();
+    private boolean initialized = false;
 
     public MainFragment() {
         // Required empty public constructor
@@ -61,24 +63,55 @@ public class MainFragment extends Fragment {
 
     public void reset() {
         model.reset();
-        for (int i = 0; i < model.getSize(); i++) {
-            int value = model.getGrid(i);
-            NumberView view = getView(i);
-            view.SetNumber(value);
 
+        int width = root.getWidth() - root.getPaddingLeft() - root.getPaddingRight();
+        int height = root.getHeight();
+        Log.d("=====", "" + width);
+        int padding = 20;
+        int start_y = 300;
+        int start_x = padding;
+        width -= padding * 2;
+        height -= start_y + padding * 2;
+        int step = width / model.getWidth();
+        int tile_size = step - padding;
+
+
+        current.setMinimumWidth(tile_size);
+        current.setMinimumHeight(tile_size);
+        current.setNumber(model.getCurrent());
+
+        views = new NumberView[model.getSize()];
+        for (int i = 0; i < views.length; i++) {
+            NumberView view = new NumberView(getActivity());
+            final int index = i;
+            views[i] = view;
+            root.addView(view);
+            int x = start_x + step * (i % model.getWidth());
+            int y = start_y + step * (i / model.getWidth());
+            view.setMinimumWidth(tile_size);
+            view.setMinimumHeight(tile_size);
+            view.setX(x);
+            view.setY(y);
+            view.setNumber(model.getGrid(i));
+
+            view.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    clickNumber(index);
+                }
+            });
         }
-        current.SetNumber(model.getCurrent());
     }
 
 
     public void clickNumber(int position) {
         AnimationModel am = model.clickNumber(position);
+        if (am == null) return;
         am.createAnimation(this).start();
     }
 
     public NumberView getView(int index) {
         if (index == NumberModel.CURRENT_INDEX) return current;
-        return adapter.getView(index);
+        return views[index];
     }
 
     @Override
@@ -98,18 +131,19 @@ public class MainFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        current = (NumberView) rootView.findViewById(R.id.current);
-        GridView gridview = (GridView) rootView.findViewById(R.id.gridView);
-        gridview.setNumColumns(NumberModel.get().getWidth());
-        adapter = new GridAdapter(getActivity());
-        gridview.setAdapter(adapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                clickNumber(position);
+        root = (RelativeLayout) rootView.findViewById(R.id.root);
+        current = (NumberView) rootView.findViewById(R.id.current);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (!initialized && getView().getWidth() > 0) {
+                    reset();
+                    initialized = true;
+                }
             }
         });
-        reset();
+        //reset();
         return rootView;
     }
 

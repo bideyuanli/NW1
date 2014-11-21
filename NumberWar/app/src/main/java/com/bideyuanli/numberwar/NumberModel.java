@@ -37,6 +37,11 @@ public class NumberModel {
     }
 
     public AnimationModel clickNumber(int index) {
+        if (getGrid(index) > 0) return null;
+
+        setGrid(index, current);
+        current = next;
+        next  = generateNext();
         AnimationModel am = new AnimationModel();
         am.setFrom(CURRENT_INDEX);
         am.setTo(index);
@@ -60,7 +65,7 @@ public class NumberModel {
 
         for (int i = 0; i < next_step.length; i++) {
             if (value < next_step[i][1]) return next_step[i][0];
-            value += next_step[i][1];
+            value -= next_step[i][1];
         }
         return 0;
     }
@@ -116,7 +121,12 @@ public class NumberModel {
     }
 
     public int getGrid(int index) {
+        if (index == CURRENT_INDEX) return current;
         return grid[index % width][index / width];
+    }
+
+    public void setGrid(int index, int value) {
+        grid[index % width][index / width] = value;
     }
 
     public int[][] getNext_step() {
