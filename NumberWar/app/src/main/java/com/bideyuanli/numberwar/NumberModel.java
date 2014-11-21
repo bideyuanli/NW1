@@ -10,8 +10,8 @@ import java.util.Random;
 public class NumberModel {
     static public final int CURRENT_INDEX = -10;
     static private NumberModel instance;
-    private int width = 6;
-    private int height = 6;
+    private int width = 5;
+    private int height = 5;
     private int step = 0;
     private int score = 0;
     private int next = 1;
@@ -66,6 +66,9 @@ public class NumberModel {
         if (queue.size() >= 3) {
             setGrid(index, value + 1);
             queue.remove(0);
+            for (int i : queue) {
+                setGrid(i, 0);
+            }
             AnimationModel am = new AnimationModel();
             am.setFroms(queue);
             am.setTo(index);

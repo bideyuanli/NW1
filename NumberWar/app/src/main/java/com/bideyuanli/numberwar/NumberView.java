@@ -47,7 +47,7 @@ public class NumberView extends TextSwitcher {
                 // create new textView and set the properties like clolr, size etc
                 TextView myText = new TextView(getContext());
                 myText.setGravity(Gravity.CENTER);
-                myText.setTextSize(30);
+                myText.setTextSize(36);
                 myText.setTextColor(Color.BLACK);
                 return myText;
             }

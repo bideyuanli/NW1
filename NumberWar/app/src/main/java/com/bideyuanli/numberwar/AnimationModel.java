@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +33,12 @@ public class AnimationModel implements Animator.AnimatorListener {
             from_views[i].setTranslationZ(10);
 
             Animator a1 = ObjectAnimator.ofFloat(from_views[i], "x", to_view.getX());
-            a1.setDuration(800);
-            a1.setInterpolator(new AccelerateDecelerateInterpolator());
+            a1.setDuration(300);
+            Interpolator interpolator = new AccelerateDecelerateInterpolator();
+            a1.setInterpolator(interpolator);
             Animator a2 = ObjectAnimator.ofFloat(from_views[i], "y", to_view.getY());
-            a2.setDuration(800);
+            a2.setDuration(300);
+            a2.setInterpolator(interpolator);
             set.playTogether(a1, a2);
         }
         set.addListener(this);
@@ -57,11 +60,12 @@ public class AnimationModel implements Animator.AnimatorListener {
             from_view.setAlpha(0f);
             from_view.setX(from_xs[i]);
             from_view.setY(from_ys[i]);
+            from_views[i].setTranslationZ(0);
             to_view.setNumber(model.getGrid(to));
             from_view.setNumber(model.getGrid(froms.get(i)));
 
             Animator a1 = ObjectAnimator.ofFloat(from_view, "alpha", 1f);
-            a1.setDuration(300);
+            a1.setDuration(200);
             set.play(a1);
         }
         set.start();

@@ -76,6 +76,8 @@ public class MainFragment extends Fragment {
         int tile_size = step - padding;
 
 
+        current.setX(start_x + step * (model.getWidth() - 1));
+        current.setY(start_y - step - 30);
         current.setMinimumWidth(tile_size);
         current.setMinimumHeight(tile_size);
         current.setNumber(model.getCurrent());
