@@ -48,7 +48,7 @@ public class NumberView extends TextSwitcher {
                 TextView myText = new TextView(getContext());
                 myText.setGravity(Gravity.CENTER);
                 myText.setTextSize(30);
-                myText.setTextColor(Color.BLUE);
+                myText.setTextColor(Color.BLACK);
                 return myText;
             }
         });
@@ -71,7 +71,7 @@ public class NumberView extends TextSwitcher {
         } else {
             setCurrentText(text);
         }
-        int c = 255 - n * 6;
+        int c = 255 - n * 20;
         int color = Color.rgb(c, c, c);
         setBackgroundColor(color);
     }

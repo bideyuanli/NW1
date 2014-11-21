@@ -3,34 +3,41 @@ package com.bideyuanli.numberwar;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Siyi on 2014/11/20.
  */
 public class AnimationModel implements Animator.AnimatorListener {
     MainFragment main;
-    NumberView from_view;
+    NumberView from_views[];
     NumberView to_view;
-    private int from;
+    private List<Integer> froms;
     private int to;
-    private float from_x;
-    private float from_y;
+    private float from_xs[];
+    private float from_ys[];
 
     public Animator createAnimation(MainFragment main) {
         this.main = main;
-        from_view = main.getView(from);
         to_view = main.getView(to);
-        from_x = from_view.getX();
-        from_y = from_view.getY();
-        from_view.setTranslationZ(10);
-
         AnimatorSet set = new AnimatorSet();
-        Animator a1 = ObjectAnimator.ofFloat(from_view, "x", to_view.getX());
+        for (int i = 0; i < froms.size(); i++) {
+            int from = froms.get(i);
+            from_views[i] = main.getView(from);
+            from_xs[i] = from_views[i].getX();
+            from_ys[i] = from_views[i].getY();
+            from_views[i].setTranslationZ(10);
 
-        a1.setDuration(800);
-        Animator a2 = ObjectAnimator.ofFloat(from_view, "y", to_view.getY());
-        a2.setDuration(800);
-        set.playTogether(a1, a2);
+            Animator a1 = ObjectAnimator.ofFloat(from_views[i], "x", to_view.getX());
+            a1.setDuration(800);
+            a1.setInterpolator(new AccelerateDecelerateInterpolator());
+            Animator a2 = ObjectAnimator.ofFloat(from_views[i], "y", to_view.getY());
+            a2.setDuration(800);
+            set.playTogether(a1, a2);
+        }
         set.addListener(this);
         return set;
     }
@@ -43,10 +50,25 @@ public class AnimationModel implements Animator.AnimatorListener {
     @Override
     public void onAnimationEnd(Animator animator) {
         NumberModel model = NumberModel.get();
-        from_view.setX(from_x);
-        from_view.setY(from_y);
-        to_view.setNumber(model.getGrid(to));
-        from_view.setNumber(model.getGrid(from));
+
+        AnimatorSet set = new AnimatorSet();
+        for (int i = 0; i < froms.size(); i++) {
+            NumberView from_view = from_views[i];
+            from_view.setAlpha(0f);
+            from_view.setX(from_xs[i]);
+            from_view.setY(from_ys[i]);
+            to_view.setNumber(model.getGrid(to));
+            from_view.setNumber(model.getGrid(froms.get(i)));
+
+            Animator a1 = ObjectAnimator.ofFloat(from_view, "alpha", 1f);
+            a1.setDuration(300);
+            set.play(a1);
+        }
+        set.start();
+        AnimationModel next =  model.calculate(to);
+        if (next == null) return;
+        next.createAnimation(main).start();
+
     }
 
     @Override
@@ -59,12 +81,17 @@ public class AnimationModel implements Animator.AnimatorListener {
 
     }
 
-    public int getFrom() {
-        return from;
+    public void setFrom(int from) {
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(from);
+        setFroms(list);
     }
 
-    public void setFrom(int from) {
-        this.from = from;
+    public void setFroms(List<Integer> froms) {
+        this.froms = froms;
+        from_xs = new float[froms.size()];
+        from_ys = new float[froms.size()];
+        from_views = new NumberView[froms.size()];
     }
 
     public int getTo() {

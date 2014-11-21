@@ -1,5 +1,7 @@
 package com.bideyuanli.numberwar;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -46,6 +48,39 @@ public class NumberModel {
         am.setFrom(CURRENT_INDEX);
         am.setTo(index);
         return am;
+    }
+
+    public AnimationModel calculate(int index) {
+        int value = getGrid(index);
+        List<Integer> queue = new ArrayList<Integer>();
+        queue.add(index);
+        for (int i = 0; i < queue.size(); ++i) {
+            int current = queue.get(i);
+            for (int next : getNearTiles(current)) {
+                if (queue.contains(next)) continue;
+                if (getGrid(next) == value) {
+                    queue.add(next);
+                }
+            }
+        }
+        if (queue.size() >= 3) {
+            setGrid(index, value + 1);
+            queue.remove(0);
+            AnimationModel am = new AnimationModel();
+            am.setFroms(queue);
+            am.setTo(index);
+            return am;
+        }
+        return null;
+    }
+
+    private List<Integer> getNearTiles(int index) {
+        List<Integer> queue = new ArrayList<Integer>();
+        if (index % width > 0) queue.add(index - 1);
+        if (index % width < width - 1) queue.add(index + 1);
+        if (index > width) queue.add(index - width);
+        if (index + width < getSize()) queue.add(index + width);
+        return queue;
     }
 
     public void reset() {
