@@ -4,9 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * Created by Siyi on 2014/11/19.
@@ -14,9 +11,11 @@ import android.widget.TextView;
 public class GridAdapter extends BaseAdapter {
     private Context mContext;
     private NumberModel model = NumberModel.get();
+    private NumberView[] views;
 
     public GridAdapter(Context c) {
         mContext = c;
+        reset();
     }
 
     public int getCount() {
@@ -31,21 +30,29 @@ public class GridAdapter extends BaseAdapter {
         return 0;
     }
 
+    public NumberView getView(int i) {
+        return views[i];
+    }
+
+    public void reset() {
+        views = new NumberView[model.getSize()];
+        for (int i = 0; i < views.length; i++) {
+            views[i] = new NumberView(mContext);
+            int padding = 4;
+            views[i].setPadding(padding, padding, padding, padding);
+        }
+    }
+
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView imageView;
+        NumberView view;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            imageView = new TextView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setPadding(8, 8, 8, 8);
-            imageView.setTextSize(20);
-            imageView.setElevation(50);
+            view = views[position];
         } else {
-            imageView = (TextView) convertView;
+            view = (NumberView) convertView;
         }
 
-        imageView.setText("" + position);
-        return imageView;
+        return view;
     }
 
 }

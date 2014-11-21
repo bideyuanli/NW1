@@ -20,20 +20,20 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
 
-            <view
-                android:layout_width="174dp"
-                android:layout_height="wrap_content"
-                class="com.bideyuanli.numberwar.NumberView"
-                android:id="@+id/view"
-                android:elevation="10dp"
-                android:nestedScrollingEnabled="false" />
-
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New Button"
                 android:id="@+id/button"
                 android:elevation="6dp" />
+
+            <view
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                class="com.bideyuanli.numberwar.NumberView"
+                android:id="@+id/current"
+                android:elevation="10dp"
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
 
         <GridView
@@ -44,7 +44,8 @@
             android:verticalSpacing="10dp"
             android:horizontalSpacing="10dp"
             android:stretchMode="columnWidth"
-            android:gravity="center" />
+            android:gravity="center"
+            android:padding="5dp" />
     </LinearLayout>
 
 </RelativeLayout>
