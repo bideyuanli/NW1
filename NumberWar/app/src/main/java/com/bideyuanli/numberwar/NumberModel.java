@@ -15,7 +15,7 @@ public class NumberModel {
             {2, 30, 0xFFE082},
             {3, 8, 0xFFD54F},
             {4, 2, 0xFFCA28},
-            {VALUE_ALL, 20, 0xCDDC39},
+            {VALUE_ALL, 1, 0xCDDC39},
             {0, 0, 0xFFFFFF},
             {5, 0, 0xFFC107},
             {6, 0, 0xFFB300},

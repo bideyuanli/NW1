@@ -66,10 +66,10 @@ public class NumberView extends TextView {
         setNumber(n, false);
     }
 
-    public void appearAnimation(int delay) {
+    public void appearAnimation(int delay, int duration) {
         setScaleX(0f);
         setScaleY(0f);
-        AnimatorSet set = createScaleAnimation(200, 1f);
+        AnimatorSet set = createScaleAnimation(duration, 1f);
         set.setStartDelay(delay);
         set.start();
     }

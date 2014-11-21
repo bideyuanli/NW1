@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Siyi on 2014/11/20.
  */
 public class AnimationModel implements Animator.AnimatorListener {
-    private final static int kDuration = 400;
+    private final static int kDuration = 300;
     private MainFragment main;
     private NumberView from_views[];
     private NumberView to_view;
@@ -70,7 +70,7 @@ public class AnimationModel implements Animator.AnimatorListener {
             from_views[i].setTranslationZ(0);
             from_view.setNumber(model.getGrid(froms.get(i)));
 
-            from_view.appearAnimation(0);
+            from_view.appearAnimation(0, 200);
         }
         AnimationModel next = model.calculate(to);
         main.updateScoreView();

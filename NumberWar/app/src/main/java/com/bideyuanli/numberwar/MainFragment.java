@@ -59,6 +59,7 @@ public class MainFragment extends Fragment {
 
     public void reset() {
         int delay = 500;
+        int duration = 500;
         if (current != null) {
             root.removeAllViews();
             delay = 0;
@@ -84,6 +85,7 @@ public class MainFragment extends Fragment {
             button.setY(y_line);
             button.setText("+");
             button.setTextColor(Color.WHITE);
+            button.setTextSize(28);
             button.setElevation(10);
 
             button.setMinimumWidth(tile_size);
@@ -105,7 +107,7 @@ public class MainFragment extends Fragment {
             score_view.setMinimumWidth(width / 2);
             score_view.setMinimumHeight(tile_size);
             score_view.setBackgroundResource(R.drawable.numberrect);
-            score_view.setTextSize(28);
+            score_view.setTextSize(24);
             score_view.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
             score_view.setPadding(0, 0, 40, 0);
             updateScoreView();
@@ -119,7 +121,7 @@ public class MainFragment extends Fragment {
             current.setMinimumWidth(tile_size);
             current.setMinimumHeight(tile_size);
             current.setNumber(model.getCurrent());
-            current.appearAnimation(delay + 200);
+            current.appearAnimation(delay + 200, duration);
         }
 
         views = new NumberView[model.getSize()];
@@ -135,7 +137,7 @@ public class MainFragment extends Fragment {
             view.setX(x);
             view.setY(y);
             view.setNumber(model.getGrid(i));
-            view.appearAnimation(delay + (i % model.getWidth() + i / model.getWidth()) * 100);
+            view.appearAnimation(delay + (i % model.getWidth() + i / model.getWidth()) * 100, duration);
 
             view.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
